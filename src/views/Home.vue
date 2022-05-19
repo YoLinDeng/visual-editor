@@ -1,18 +1,36 @@
+
+<script lang="ts" setup>
+// import { useTemplateStore } from '@/stores/template'
+import TemplateList from '@/components/template-list'
+import subpage from '@/components/subpage'
+import { tabConfig } from '@/config/tab.ts'
+// const template = useTemplateStore()
+</script>
+
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+  <div class="editor-container">
+    <el-container>
+      <el-aside class="left-box">
+        <TemplateList :tab-config="tabConfig"></TemplateList>
+      </el-aside>
+      <el-main>
+        <subpage></subpage>
+      </el-main>
+      <el-aside width="300px" class="right-box">Aside</el-aside>
+    </el-container>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
-
-export default defineComponent({
-  name: 'Home',
-  components: {
-    HelloWorld,
-  },
-});
-</script>
+<style lang="scss">
+body {
+  background: #f0f2f5;
+  margin: 0;
+}
+.left-box {
+  height: 100vh;
+}
+.el-main {
+  height: 100vh;
+  padding-top: 70px !important;
+}
+</style>

@@ -1,0 +1,51 @@
+{
+  "id": "3393044",
+  "name": "可视化编辑器",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "29636018",
+      "name": "文字",
+      "font_class": "text",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "29636019",
+      "name": "符号-按钮",
+      "font_class": "btn",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "29636020",
+      "name": "表单",
+      "font_class": "form",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "29636021",
+      "name": "弹层",
+      "font_class": "layer",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "29636022",
+      "name": "banner",
+      "font_class": "banner",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "29635916",
+      "name": "img",
+      "font_class": "img",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    }
+  ]
+}
