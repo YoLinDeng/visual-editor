@@ -5,8 +5,10 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
     "commit": "git add -A && git cz && npm run update:version && git push",
-    "lint": "vue-cli-service lint"
+    "standard": "standard-version",
+    "update:version": "node ./scripts/version.js"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^1.1.4",
