@@ -6,11 +6,13 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import ContentInput from '@/components/base/content-input.vue'
 import ContentAsset from '@/components/base/content-asset.vue'
+import ContentBox from '@/components/base/content-box.vue'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
 const app = createApp(App)
 app.component('content-input', ContentInput)
 app.component('content-asset', ContentAsset)
+app.component('content-box', ContentBox)
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)

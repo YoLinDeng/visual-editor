@@ -1,22 +1,25 @@
 
 <script lang="ts" setup>
-// import { useTemplateStore } from '@/stores/template'
-import TemplateList from '@/components/template-list'
-import subpage from '@/components/subpage'
-import { tabConfig } from '@/config/tab.ts'
-// const template = useTemplateStore()
+import { useTemplateStore } from '@/stores/template'
+import TemplateList from '@/components/template-list/index.vue'
+import subpage from '@/components/subpage/index.vue'
+import StyleEditor from '@/components/style-editor/index.vue'
+import { Tab } from '@/config'
+const template = useTemplateStore()
 </script>
 
 <template>
   <div class="editor-container">
     <el-container>
       <el-aside class="left-box">
-        <TemplateList :tab-config="tabConfig"></TemplateList>
+        <template-list :tab-config="Tab.tabConfig"></template-list>
       </el-aside>
       <el-main>
         <subpage></subpage>
       </el-main>
-      <el-aside width="300px" class="right-box">Aside</el-aside>
+      <el-aside class="right-box">
+        <style-editor v-show="template.activeElemId"></style-editor>
+      </el-aside>
     </el-container>
   </div>
 </template>
@@ -27,10 +30,23 @@ body {
   margin: 0;
 }
 .left-box {
+  width: 400px !important;
   height: 100vh;
+}
+.right-box {
+  width: 300px;
+  height: 100vh;
+  background: #fff;
+  overflow: auto;
 }
 .el-main {
   height: 100vh;
+  margin: 0 auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   padding-top: 70px !important;
+  &::-webkit-scrollbar {
+    display: none;/*隐藏滚动条*/
+  }
 }
 </style>

@@ -11,6 +11,7 @@ import {
   cloneDeep,
   fill
 } from 'lodash-es'
+import { nanoid } from 'nanoid'
 
 // 自身向上查找匹配的父元素
 const findUpwardElement = ($el: HTMLElement, ids: string[], key: string): HTMLElement => {
@@ -23,8 +24,25 @@ const findUpwardElement = ($el: HTMLElement, ids: string[], key: string): HTMLEl
   return parent
 }
 
+// 递归查找配置
+const findConfig = (config: any[], id: string): any => {
+  let currConfig = null
+  for (let i = 0; i < config.length; i++) {
+    if (config[i].id === id) {
+      currConfig = config[i]
+      break
+    }
+    if (config[i]?.slot?.length > 0) {
+      currConfig = findConfig(config[i].slot, id)
+    }
+  }
+  return currConfig
+}
+
 export {
   findUpwardElement,
+  findConfig,
+  nanoid,
   mergeWith,
   tail,
   set,

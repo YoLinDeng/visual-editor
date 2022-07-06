@@ -5,13 +5,14 @@ export default {
 </script>
 
 <script setup lang='ts'>
-import { computed, nextTick } from 'vue'
+import { computed, nextTick, PropType } from 'vue'
 import { useTemplateStore } from '@/stores/template'
+import { useLoopChangeId } from '@/utils/hooks'
 import * as utils from '@/utils'
 
 const props = defineProps({
   modelValue: {
-    type: Object
+    type: Object as PropType<any>
   }
 })
 
@@ -19,22 +20,26 @@ const emit = defineEmits(['resetSelectRect'])
 const template = useTemplateStore()
 
 const hoverRect = computed(() => {
-  return utils.transform(props.modelValue.hover.rect, (result, value, key) => {
+  return utils.transform(props.modelValue.hover.rect, (result: any, value: number, key: string) => {
     result[key] = `${value}px`
   })
 })
 const selectRect = computed(() => {
-  return utils.transform(props.modelValue.select.rect, (result, value, key) => {
+  return utils.transform(props.modelValue.select.rect, (result: any, value: number, key: string) => {
     result[key] = `${value}px`
   })
 })
 
+let visibleMove = computed(() => {
+  return !props.modelValue.select.id.includes('block-slot')
+})
+
 const move = (type: string, id: string): void => {
-  const currIndex = template.config.findIndex(x => x.id === id)
+  const currIndex = template.config.findIndex((x: any) => x.id === id)
   const excIndex = type === 'top' ? currIndex - 1 : currIndex + 1
   if (template.config[excIndex]) {
-    const currItem = template.config[currIndex]
-    const excItem = template.config[excIndex]
+    const currItem = utils.cloneDeep(template.config[currIndex])
+    const excItem = utils.cloneDeep(template.config[excIndex])
     utils.fill(template.config, excItem, currIndex, currIndex + 1)
     utils.fill(template.config, currItem, excIndex, excIndex + 1)
     nextTick(() => {
@@ -43,45 +48,80 @@ const move = (type: string, id: string): void => {
   }
 }
 
+const queryDelete = (id: string, config: any): void => {
+  config.forEach((x: any, i: number) => {
+    if (x.id === id) {
+      config.splice(i, 1)
+    }
+    if (x.slot && x.slot.length > 0) {
+      queryDelete(id, x.slot)
+    }
+    if (x.slot && x.slot.length === 0) {
+      config.splice(i, 1)
+    }
+  })
+}
+
+
+const queryCopy = (id: string, config: any): void => {
+  console.log(config)
+  config.forEach((x: any) => {
+    if (x.id === id) {
+      const cloneX = utils.cloneDeep(x)
+      cloneX.id = utils.nanoid()
+      cloneX.slot && useLoopChangeId(cloneX.slot)
+      config.push(cloneX)
+    } else {
+      if (x.slot && x.slot.length > 0) {
+        queryCopy(id, x.slot)
+      }
+    }
+  })
+}
+
 const deleteItem = (id: string): void => {
-  const currIndex = template.config.findIndex(x => x.id === id)
-  template.config.splice(currIndex, 1)
+  queryDelete(id, template.config)
   nextTick(() => {
     emit('resetSelectRect')
   })
 }
 
 const copy = (id: string): void => {
-  const curr = template.config.find(x => x.id === id)
-  curr.id = `${curr.id.split('-')[0]}-${new Date().getTime()}`
-  template.config.push(curr)
+  queryCopy(id, template.config)
+  nextTick(() => {
+    emit('resetSelectRect')
+  })
 }
 
 </script>
+
 <template>
   <div class="mouse-catcher">
-    <div class="hover"
+    <div :class="['hover', {'block-hover': props.modelValue.hover.eleName === 'content-box'}]"
       :style="hoverRect" 
       v-show="props.modelValue.hover.id && props.modelValue.hover.id !== props.modelValue.select.id">
     </div>
-    <div class="select"
+    <div
+      :class="['select', {'block-select': props.modelValue.select.eleName === 'content-box'}]"
       :style="selectRect"
       v-show="props.modelValue.select.id">
       <div class="toolbar">
-        <button @click.stop="move('top', props.modelValue.select.id)">
-          <el-tooltip class="item" effect="dark" content="上移" placement="top">
-            <el-icon :size="20">
-              <Top />
-            </el-icon>
-          </el-tooltip>
-        </button>
-        <button @click.stop="move('up', props.modelValue.select.id)">
-          <el-tooltip class="item" effect="dark" content="下移" placement="top">
-            <el-icon :size="20">
-              <Bottom />
-            </el-icon>
-          </el-tooltip>
-        </button>
+        <template class="move-box" v-if="visibleMove">
+          <button @click.stop="move('top', props.modelValue.select.id)">
+            <el-tooltip class="item" effect="dark" content="上移" placement="top">
+              <el-icon :size="20">
+                <Top />
+              </el-icon>
+            </el-tooltip>
+          </button>
+          <button @click.stop="move('up', props.modelValue.select.id)">
+            <el-tooltip class="item" effect="dark" content="下移" placement="top">
+              <el-icon :size="20">
+                <Bottom />
+              </el-icon>
+            </el-tooltip>
+          </button>
+        </template>
         <button @click.stop="deleteItem(props.modelValue.select.id)">
           <el-tooltip class="item" effect="dark" content="删除" placement="top">
             <el-icon :size="20">
@@ -111,10 +151,25 @@ const copy = (id: string): void => {
   .hover {
     position: absolute;
     background: rgba(53,143,255,.2);
+    border: 1px solid #358FFF;
+    &.block-hover {
+      border: 1px solid #f67161;
+    }
   }
   .select {
     position: absolute;
     border: 2px solid #358FFF;
+    &.block-select {
+       border: 2px solid #f67161;
+       .toolbar {
+          background: #f67161;
+          button {
+            &:hover{
+              background:#c7412b;
+            }
+          }
+       }
+    }
     .toolbar {
       background: #358FFF;
       position: absolute;

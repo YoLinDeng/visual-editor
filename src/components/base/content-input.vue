@@ -5,9 +5,12 @@ export default {
 </script>
 
 <script setup lang='ts'>
+import { PropType } from 'vue';
+import { useStyleFix } from '@/utils/hooks'
+
 const props = defineProps({
-  modelValue: {
-    type: String
+  config: {
+    type: Object as PropType<any>
   }
 })
 </script>
@@ -15,7 +18,8 @@ const props = defineProps({
 <template>
   <div 
     class="content-input"
-    v-html="props.modelValue"
+    v-html="props.config.value"
+    :style="[props.config.style, useStyleFix(props.config.style)]"
   >
   </div>
 </template>

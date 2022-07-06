@@ -5,7 +5,7 @@ export const useTemplateStore = defineStore({
   id: 'template',
   state: () => ({
     config: [] as any,
-    count: 123
+    activeElemId: ''
   }),
   getters: {
   },
