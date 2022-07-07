@@ -1,5 +1,6 @@
 # visual-editor
 基于vue-cli，使用vue3.2 setup语法糖结构和TypeScript编写、pinia作为状态管理库、sortablejs实现元素拖拽、element-plus作为UI库。
+[在线预览](https://yolindeng.github.io/visual-editor-home-page)
 ## 安装依赖
 ```
 yarn install
