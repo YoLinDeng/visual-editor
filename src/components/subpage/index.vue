@@ -6,7 +6,7 @@ export default {
 
 <script setup lang='ts'>
 import MouseCatcher from '@/components/mouse-catcher/index.vue'
-import { onMounted, ref, reactive } from 'vue'
+import { onMounted, ref, reactive, nextTick } from 'vue'
 import { useTemplateStore } from '@/stores/template'
 import * as utils from '@/utils'
 
@@ -40,6 +40,12 @@ const catcher: any = reactive(
 const template = useTemplateStore()
 const subpage = ref()
 
+// eslint-disable-next-line
+const subscribe = template.$subscribe(() => {
+  nextTick(() => {
+    resetSelectRect(template.activeElemId)
+  })
+}, { detached: false })
 const resetRect = ($el: HTMLElement, type: string): void => {
   if ($el) {
     const parentRect = utils.pick(subpage.value.getBoundingClientRect(), 'left', 'top')
@@ -110,6 +116,7 @@ onMounted(() => {
   position: relative;
   margin: 0 auto;
   background: #fff;
+  border-top: 1px solid transparent;
   .config-item {
     display: none;
   }

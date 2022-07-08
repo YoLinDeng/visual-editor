@@ -15,7 +15,7 @@ import { findConfig } from '@/utils'
 const template = useTemplateStore()
 const activeNames = ref(['1', '2'])
 const bg = reactive({
-  color: '#fff',
+  color: '',
   image: ''
 })
 let borderRadius = ref<string>('0px')
@@ -95,6 +95,10 @@ const displayOptions = reactive([
     label: '行内块级'
   },
   {
+    value: 'flex',
+    label: '弹性布局'
+  },
+  {
     value: 'none',
     label: '隐藏'
   }
@@ -133,7 +137,7 @@ watch(() => template.activeElemId, () => {
     boxShadow.blur = boxShadowArr[2] || '0px'
     boxShadow.spread = boxShadowArr[3] || '0px'
     boxShadow.color = boxShadowArr[4] || '#000'
-    bg.color = backgroundColor || '#fff'
+    bg.color = backgroundColor || ''
     bg.image = backgroundImage || ''
     location.position = position || 'static'
     location.top = top || ''

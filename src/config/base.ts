@@ -11,6 +11,11 @@ export const config: any = {
   },
   img: {
     value: require('@/assets/logo.png'),
-    name: 'content-asset'
+    name: 'content-asset',
+    style: {
+      width: '100px',
+      height: '100px',
+      display: 'inline-block'
+    }
   }
 }

@@ -14,10 +14,14 @@ const props = defineProps({
 })
 </script>
 <template>
-  <div class="content-asset">
+  <div class="content-asset" :style="props.config.style">
     <img :src="props.config.value">
   </div>
 </template>
 
 <style lang='scss' scoped>
+img {
+  width: 100%;
+  height: 100%;
+}
 </style>
