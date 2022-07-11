@@ -59,10 +59,11 @@ const initSortableSide = (): void => {
           item.remove()
         }
         if (pageX > left && pageX  < right && pageY > top && pageY < bottom) {
-          const { name, type, id } = dataset
+          const { name, type, index } = dataset
+          console.log(dataset, index)
           let currConfigItem = {} as any
-          if (type && id) {
-            currConfigItem = utils.cloneDeep(Template.config[type].find((x:any) => x.id === id).config)
+          if (type) {
+            currConfigItem = utils.cloneDeep(Template.config[type][index].config)
             currConfigItem.id = utils.nanoid()
             currConfigItem.slot = configItemAddId(currConfigItem.slot)
           } else {
@@ -118,7 +119,6 @@ const addToSubPage = (config: any): void => {
   const cloneConfig = utils.cloneDeep(config)
   cloneConfig.id = utils.nanoid()
   cloneConfig.slot && useLoopChangeId(cloneConfig.slot)
-  console.log(templateStore.config)
   templateStore.config.push(cloneConfig)
   key.value = Date.now()
 }
@@ -148,7 +148,7 @@ watch(key, () => {
               <div v-if="activeType === 'text'" class="config-item-text" v-html="Base.config[_item].value"></div>
               <img v-if="activeType === 'img'" class="config-item-img" :src="Base.config[_item].value"/>
             </div>
-            <div class="config-item" v-for="tItem in Template.config[activeType]" :key="tItem.id" :data-type="activeType" :data-id="tItem.id" @click="addToSubPage(tItem.config)">
+            <div class="config-item" v-for="(tItem, tIndex) in Template.config[activeType]" :key="tItem.id" :data-type="activeType" :data-index="tIndex" @click="addToSubPage(tItem.config)">
               <img :src="tItem.preview" class="preview">
             </div>
           </div>
@@ -178,9 +178,11 @@ watch(key, () => {
   position: relative;
   .preview {
     width: 100%;
+    height: 50px;
     position: relative;
     z-index: 1;
     display: inherit;
+    object-fit: contain;
   }
   &-text {
     position: relative;
