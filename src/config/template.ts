@@ -3,6 +3,7 @@ export const config: any =  {
     {
       config: {
         name: 'content-box',
+        noDrag: 1,
         slot: [
           {
             name: 'content-input',
@@ -95,6 +96,7 @@ export const config: any =  {
     {
       config: {
         name: "content-box",
+        noDrag: 1,
         slot: [
           {
             name: "content-input",
@@ -130,38 +132,43 @@ export const config: any =  {
   form: [
     {
       config: {
-        fields: [
+        name: "content-box",
+        noDrag: 1,
+        style: { padding: '20px' },
+        slot: [
           {
-            label: '姓名',
-            prop: 'name',
-            other: {
-              placeholder: "",
-              sex: {
-                text: '男/女',
-                visible: 1
+            name: 'v-form',
+            fields: [
+              {
+                label: '姓名',
+                prop: 'name',
+                other: {
+                  placeholder: "",
+                  sex: {
+                    text: '男/女',
+                    visible: 1
+                  }
+                }
+              },
+              {
+                label: '手机号',
+                prop: 'mobile',
+                other: {
+                  hideMobileCode: 0,
+                  placeholder: ""
+                }
               }
-            }
-          },
-          {
-            label: '手机号',
-            prop: 'mobile',
-            other: {
-              hideMobileCode: 0,
-              placeholder: ""
-            }
+            ],
+            submitBtnOpts: {
+              text: '提交',
+              style: ''
+            },
+            style: {},
           }
         ],
-        name: 'v-form',
-        submitBtnOpts: {
-          text: '提交',
-          style: ''
-        },
-        slot: [],
-        bottomSlot: [],
-        style: {},
       },
-      name: '表单',
-      preview: '',
+      name: '表单内容',
+      preview: require("@/assets/form1.png"),
     }
   ]
 }

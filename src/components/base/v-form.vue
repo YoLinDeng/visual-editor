@@ -18,8 +18,7 @@ const onSubmit = (values: any) => {
 }
 </script>
 <template>
-  <div class="v-form">
-
+  <div class="v-form" :style="props.config?.style">
     <van-form @submit="onSubmit">
       <van-cell-group inset>
         <van-field
@@ -28,13 +27,13 @@ const onSubmit = (values: any) => {
           v-model="formData[item.prop]"
           :name="item.label"
           :label="item.label"
-          :placeholder="item.other.placeholder"
+          :placeholder="item.other.placeholder || `请输入您的${item.label}`"
           :rules="[{ required: true, message: `请填写${item.label}` }]"
         />
       </van-cell-group>
-    <div style="margin: 16px;">
-      <van-button round block type="primary" native-type="submit">
-        提交
+    <div style="margin: 10px;">
+      <van-button round block type="primary" native-type="submit" :style="props.config?.submitBtnOpts.style">
+        {{ props.config?.submitBtnOpts.text || '提交' }}
       </van-button>
     </div>
   </van-form>

@@ -178,7 +178,6 @@ watch(key, () => {
   position: relative;
   .preview {
     width: 100%;
-    height: 50px;
     position: relative;
     z-index: 1;
     display: inherit;

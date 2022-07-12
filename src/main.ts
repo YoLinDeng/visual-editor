@@ -11,6 +11,7 @@ import VForm from '@/components/base/v-form.vue'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import Vant from 'vant';
 import 'vant/lib/index.css';
+import 'default-passive-events'
 
 const app = createApp(App)
 app.component('content-input', ContentInput)

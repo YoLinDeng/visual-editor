@@ -8,9 +8,10 @@ export default {
 <script setup lang='ts'>
 import { ref, reactive, watch } from 'vue'
 import { useTemplateStore } from '@/stores/template'
-import TinymceEditor from '@/components/tinymce-editor/index.vue'
-import MarginEditor from '@/components/margin-editor/index.vue'
+import TinymceEditor from '@/components/editor/tinymce-editor/index.vue'
+import MarginEditor from '@/components/editor/margin-editor/index.vue'
 import { findConfig } from '@/utils'
+import { editorTypeText } from '@/config/enum'
 
 const template = useTemplateStore()
 const activeNames = ref(['1', '2'])
@@ -145,19 +146,7 @@ watch(() => template.activeElemId, () => {
     location.left = left || ''
     location.right = right || ''
     location.display = display || 'block'
-    switch(activeElem?.name) {
-      case 'content-input': 
-        editorTitle.value = '文字'
-        break
-      case 'content-asset': 
-        editorTitle.value = '图片'
-        break
-      case 'content-box': 
-        editorTitle.value = '盒子'
-        break
-      default:
-        editorTitle.value = ''
-    }
+    editorTitle.value = editorTypeText[activeElem.name as never]
   }
 })
 

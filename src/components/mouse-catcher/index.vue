@@ -5,7 +5,7 @@ export default {
 </script>
 
 <script setup lang='ts'>
-import { computed, nextTick, PropType } from 'vue'
+import { computed, PropType } from 'vue'
 import { useTemplateStore } from '@/stores/template'
 import { useLoopChangeId } from '@/utils/hooks'
 import * as utils from '@/utils'
@@ -16,7 +16,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['resetSelectRect'])
+// const emit = defineEmits(['resetSelectRect'])
 const template = useTemplateStore()
 
 const hoverRect = computed(() => {
@@ -31,21 +31,23 @@ const selectRect = computed(() => {
 })
 
 let visibleMove = computed(() => {
-  return !props.modelValue.select.id.includes('block-slot')
+  const id = props.modelValue.select.id
+  let $el: any = document.getElementById(id) ?? ''
+  return !($el && $el.parentNode && $el.parentNode.classList.contains('no-drag'))
 })
 
 const move = (type: string, id: string): void => {
-  const currIndex = template.config.findIndex((x: any) => x.id === id)
-  const excIndex = type === 'top' ? currIndex - 1 : currIndex + 1
-  if (template.config[excIndex]) {
-    const currItem = utils.cloneDeep(template.config[currIndex])
-    const excItem = utils.cloneDeep(template.config[excIndex])
-    utils.fill(template.config, excItem, currIndex, currIndex + 1)
-    utils.fill(template.config, currItem, excIndex, excIndex + 1)
-    nextTick(() => {
-      emit('resetSelectRect', id)
-    })
-  }
+  const $currEl = document.getElementById(id)
+  const $el: any = utils.findUpwardElement($currEl as HTMLElement, ['content-box'], 'classList')
+  let list = !$el || ($el === $currEl && $el.parentNode.classList.contains('subpage')) ? template.config : utils.findConfig(template.config, $el.id).slot ?? []
+    const currIndex = list.findIndex((x: any) => x.id === id)
+    const excIndex = type === 'top' ? currIndex - 1 : currIndex + 1
+    if (list[excIndex]) {
+      const currItem = utils.cloneDeep(list[currIndex])
+      const excItem = utils.cloneDeep(list[excIndex])
+      utils.fill(list, excItem, currIndex, currIndex + 1)
+      utils.fill(list, currItem, excIndex, excIndex + 1)
+    }
 }
 
 const queryDelete = (id: string, config: any): void => {
@@ -60,6 +62,7 @@ const queryDelete = (id: string, config: any): void => {
       config.splice(i, 1)
     }
   })
+  template.activeElemId = ''
 }
 
 
@@ -81,16 +84,10 @@ const queryCopy = (id: string, config: any): void => {
 
 const deleteItem = (id: string): void => {
   queryDelete(id, template.config)
-  nextTick(() => {
-    emit('resetSelectRect')
-  })
 }
 
 const copy = (id: string): void => {
   queryCopy(id, template.config)
-  nextTick(() => {
-    emit('resetSelectRect')
-  })
 }
 
 </script>

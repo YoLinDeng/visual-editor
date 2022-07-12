@@ -11,7 +11,7 @@ import { useTemplateStore } from '@/stores/template'
 import * as utils from '@/utils'
 
 const editorElements: string[] = reactive([
-  'content-asset', 'content-input', 'content-box'
+  'content-asset', 'content-input', 'content-box', 'v-form'
 ])
 
 interface rectInter {
@@ -67,7 +67,7 @@ const removeSelect = (): void => {
 
 const resetSelectRect = (id: string): void => {
   if (id) {
-    resetRect(document.querySelector(`#${id}`) as HTMLElement, 'select')
+    resetRect(document.getElementById(id) as HTMLElement, 'select')
   } else {
     removeSelect()
   }
@@ -95,6 +95,7 @@ const listeners = {
     }
   }
 } as any
+
 onMounted(() => {
   Object.keys(listeners).forEach(event => {
     subpage.value.addEventListener(event, listeners[event], true)
@@ -105,7 +106,7 @@ onMounted(() => {
   <div class="subpage" ref="subpage">
     <component v-for="item in template.config" :key="item.id" :is="item.name" :config="item" :id="item.id">
     </component>
-    <MouseCatcher class="ignore" v-model="catcher" @resetSelectRect="resetSelectRect"></MouseCatcher>
+    <MouseCatcher class="ignore" v-model="catcher"></MouseCatcher>
   </div>
 </template>
 
@@ -117,6 +118,12 @@ onMounted(() => {
   margin: 0 auto;
   background: #fff;
   border-top: 1px solid transparent;
+  .content-box {
+    border: 3px dashed #eee;
+    &.no-drag {
+      border: none;
+    }
+  }
   .config-item {
     display: none;
   }

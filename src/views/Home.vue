@@ -3,7 +3,7 @@
 import { useTemplateStore } from '@/stores/template'
 import TemplateList from '@/components/template-list/index.vue'
 import subpage from '@/components/subpage/index.vue'
-import StyleEditor from '@/components/style-editor/index.vue'
+import ConfigEditor from '@/components/config-editor/index.vue'
 import { Tab } from '@/config'
 const template = useTemplateStore()
 </script>
@@ -18,7 +18,7 @@ const template = useTemplateStore()
         <subpage></subpage>
       </el-main>
       <el-aside class="right-box">
-        <style-editor v-show="template.activeElemId"></style-editor>
+        <config-editor v-show="template.activeElemId"></config-editor>
       </el-aside>
     </el-container>
   </div>
