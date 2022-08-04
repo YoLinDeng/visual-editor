@@ -46,7 +46,7 @@ export const config: any =  {
         ],
         style: {
           alignItems: 'center',
-          backgroundColor: 'rgba(246, 96, 75, 1)',
+          backgroundColor: 'rgba(26, 96, 175, 1)',
           display: 'flex',
           height: '40px',
           justifyContent: 'center',
@@ -55,7 +55,7 @@ export const config: any =  {
         value: ''
       },
       name: '带点的标题',
-      preview: require('@/assets/title1.png')
+      preview: require('@/assets/title1.jpg')
     }
   ],
   img: [
