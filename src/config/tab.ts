@@ -32,8 +32,8 @@ export const tabConfig = [
     icon: 'iconfont icon-form'
   },
   {
-    label: '弹层',
-    value: 'layer',
+    label: '基础',
+    value: 'base',
     icon: 'iconfont icon-layer'
   }
 ]

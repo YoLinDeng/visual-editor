@@ -17,5 +17,17 @@ export const config: any = {
       height: '100px',
       display: 'inline-block'
     }
+  },
+  box: {
+    name: 'content-box',
+    noDrag: 0,
+    style: {
+      width: '100%',
+      minHeight: '100px',
+      height: 'auto',
+      display: 'inline-block',
+      boxSizing: 'border-box'
+    },
+    slot: []
   }
 }

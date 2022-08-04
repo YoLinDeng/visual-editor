@@ -1,6 +1,6 @@
 <script setup lang='ts'>
 import { Sortable } from 'sortablejs/modular/sortable.core.esm'
-import { onMounted, ref, getCurrentInstance, watch, PropType } from 'vue'
+import { onMounted, ref, getCurrentInstance, watch, PropType, nextTick } from 'vue'
 import { useTemplateStore } from '@/stores/template'
 import { useLoopChangeId } from '@/utils/hooks'
 import { Base } from '@/config'
@@ -71,7 +71,6 @@ const initSortableSide = (): void => {
             currConfigItem.id = utils.nanoid()
           }
           templateStore.config.push(currConfigItem)
-          console.log(templateStore.config)
           key.value = Date.now()
         } else {
           console.log('false')
@@ -87,31 +86,88 @@ const initSortableSubpage = (): void => {
   instance._sortableSubpage = Sortable.create(document.querySelector('.subpage'), {
     group: 'shared',
     filter: '.ignore',
-    onStart: ({ originalEvent }: any) => {
-      instance._startPageX = originalEvent.pageX
-      instance._startPageY = originalEvent.pageY
+    onStart: ({ item }: any) => {
+      console.log(item.id)
     },
-    onEnd: ({ newIndex, oldIndex, originalEvent }: any) => {
-      const { pageX } = originalEvent
-      const { left, right } = (document.querySelector('.subpage') as HTMLElement).getBoundingClientRect()
-      if (pageX < left || pageX > right) {
-        templateStore.config.splice(oldIndex, 1)
-      } else {
-        if (newIndex !== oldIndex) {
-          if (newIndex === templateStore.config.length) {
-            newIndex = newIndex - 1
+    onEnd: (obj: any) => {
+      let { newIndex, oldIndex, originalEvent, item, to } = obj
+      if (to.classList.contains('subpage')) {
+        const { pageX } = originalEvent
+        const { left, right } = (document.querySelector('.subpage') as HTMLElement).getBoundingClientRect()
+        if (pageX < left || pageX > right) {
+          templateStore.config.splice(oldIndex, 1)
+        } else {
+          if (newIndex !== oldIndex) {
+            if (newIndex === templateStore.config.length) {
+              newIndex = newIndex - 1
+            }
+            if (oldIndex === templateStore.config.length) {
+              oldIndex = oldIndex - 1
+            }
+            const oldVal = utils.cloneDeep(templateStore.config[oldIndex])
+            const newVal = utils.cloneDeep(templateStore.config[newIndex])
+            utils.fill(templateStore.config, oldVal, newIndex, newIndex + 1)
+            utils.fill(templateStore.config, newVal, oldIndex, oldIndex + 1)
           }
-          if (oldIndex === templateStore.config.length) {
-            oldIndex = oldIndex - 1
-          }
-          const oldVal = utils.cloneDeep(templateStore.config[oldIndex])
-          const newVal = utils.cloneDeep(templateStore.config[newIndex])
-          utils.fill(templateStore.config, oldVal, newIndex, newIndex + 1)
-          utils.fill(templateStore.config, newVal, oldIndex, oldIndex + 1)
-          console.log(templateStore.config)
         }
+      } else {
+        const itemIndex = templateStore.config.findIndex((x: any) => x.id === item.id)
+        const currContentBox = utils.findConfig(templateStore.config, to.id)
+        const currItem = templateStore.config.splice(itemIndex, 1)[0]
+        currContentBox.slot.push(currItem)
       }
     }
+  })
+}
+
+const initSortableContentBox = () => {
+  console.log(Array.from(document.querySelectorAll('.subpage .content-box')).filter((x: any) => !x.classList.contains('no-drag')))
+  Array.from(document.querySelectorAll('.subpage .content-box')).filter((x: any) => !x.classList.contains('no-drag')).forEach(($content, contentIndex) => {
+    instance[`_sortableContentBox_${contentIndex}`] && instance[`_sortableContentBox_${contentIndex}`].destroy()
+    instance[`_sortableContentBox_${contentIndex}`] = Sortable.create($content, {
+      group: 'shared',
+      onStart: ({ from }: any) => {
+        console.log(from.id)
+      },
+      onEnd: (obj: any) => {
+        let { newIndex, oldIndex, item, to, from } = obj
+        if (to.classList.contains('subpage')) {
+          const currContentBox = utils.findConfig(templateStore.config, from.id)
+          const currItemIndex = currContentBox.slot.findIndex((x: any) => x.id === item.id)
+          const currItem = currContentBox.slot.splice(currItemIndex, 1)[0]
+          templateStore.config.push(currItem)
+          console.log(templateStore.config)
+        } else {
+          console.log(item)
+          console.log(from)
+          console.log(to)
+          // 同一盒子中移动
+          if (from.id === to.id) {
+            const currContentBox = utils.findConfig(templateStore.config, from.id)
+            if (newIndex !== oldIndex) {
+              if (newIndex === currContentBox.length) {
+                newIndex = newIndex - 1
+              }
+              if (oldIndex === currContentBox.length) {
+                oldIndex = oldIndex - 1
+              }
+              const oldVal = utils.cloneDeep(currContentBox.slot[oldIndex])
+              const newVal = utils.cloneDeep(currContentBox.slot[newIndex])
+              utils.fill(currContentBox.slot, oldVal, newIndex, newIndex + 1)
+              utils.fill(currContentBox.slot, newVal, oldIndex, oldIndex + 1)
+            }
+          } else {
+            // 从一个盒子移动到另一个盒子
+            const currContentBox = utils.findConfig(templateStore.config, from.id)
+            const currItemIndex = currContentBox.slot.findIndex((x: any) => x.id === item.id)
+            const currItem = currContentBox.slot.splice(currItemIndex, 1)[0]
+            const toContentBox = utils.findConfig(templateStore.config, to.id)
+            toContentBox.slot.push(currItem)
+            console.log(templateStore.config)
+          }
+        }
+      }
+    })
   })
 }
 
@@ -128,6 +184,9 @@ onMounted(() => {
 
 watch(key, () => {
   initSortableSubpage()
+  nextTick(() => {
+    initSortableContentBox()
+  })
 })
 
 </script>
@@ -144,6 +203,14 @@ watch(key, () => {
         <div class="tab-content">
           <div class="tab-content-title">{{item.label}}</div>
           <div class="main-box" ref="mainBox">
+            <div class="config-item base" v-if="activeType === 'base'" data-name="text" @click="addToSubPage(Base.config['text'])">
+              <el-icon :size="20"><Document /></el-icon>
+              <div>文本</div>
+            </div>
+            <div class="config-item base" v-if="activeType === 'base'"  data-name="box" @click="addToSubPage(Base.config['box'])">
+              <el-icon :size="20"><Box /></el-icon>
+              <div>盒子</div>
+            </div>
             <div class="config-item" v-for="_item in item.children" :key="_item" :data-name="_item" @click="addToSubPage(Base.config[_item])">
               <div v-if="activeType === 'text'" class="config-item-text" v-html="Base.config[_item].value"></div>
               <img v-if="activeType === 'img'" class="config-item-img" :src="Base.config[_item].value"/>
@@ -171,11 +238,22 @@ watch(key, () => {
     margin-right: 10px;
   }
 }
+.main-box {
+  display: flex;
+  flex-wrap: wrap;
+}
 .config-item {
   width: 100%;
-  margin: 10px 0;
+  margin: 5px 0;
   cursor: move;
   position: relative;
+  &.base {
+    width: 45%;
+    margin: 5px;
+    padding: 5px;
+    box-sizing: border-box;
+    border: 1px dotted #ccc;
+  }
   .preview {
     width: 100%;
     position: relative;
