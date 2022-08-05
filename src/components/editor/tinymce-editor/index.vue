@@ -21,8 +21,8 @@ const state = reactive({
   content: '',
   setting: {
     height: 300,
-    language: 'zh_CN',
-    language_url: 'https://unpkg.com/@jsdawn/vue3-tinymce@1.1.6/dist/tinymce/langs/zh_CN.js'
+    language: 'zh-Hans',
+    language_url: '/tinymce/langs/zh-Hans.js'
   }
 })
 
