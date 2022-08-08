@@ -28,6 +28,7 @@ const state = reactive({
 
 watch(() => props.modelValue, () => {
   props.modelValue && (state.content = findConfig(template.config, props.modelValue)?.value)
+  console.log('test')
 })
 
 watch(() => state.content, () => {
