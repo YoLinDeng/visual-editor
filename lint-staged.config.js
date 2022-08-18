@@ -1,6 +1,6 @@
 module.exports = {
   '*.{js,jsx,vue,ts,tsx}': [
-    'npm run lint'
+    'vue-cli-service lint'
   ],
   '*.{html,css,less,vue}': [
     'npm run lint:css'
