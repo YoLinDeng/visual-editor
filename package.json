@@ -9,7 +9,8 @@
     "lint:css": "stylelint src/**/*.{html,css,less,vue} --fix",
     "commit": "git add -A && git cz && npm run update:version && git push",
     "standard": "standard-version",
-    "update:version": "node ./scripts/version.js"
+    "update:version": "node ./scripts/version.js",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^1.1.4",
@@ -54,14 +55,7 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "node ./scripts/preCommit.js"
-    }
-  },
   "lint-staged": {
-    "*.{js,jsx,vue,ts,tsx}": [
-      "vue-cli-service lint"
-    ]
+    "*.js": "eslint --cache --fix"
   }
 }
