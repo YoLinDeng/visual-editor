@@ -10,7 +10,7 @@
 </template>
 <script lang="ts" setup>
   import { onMounted, ref } from 'vue';
-
+  console.log('test')
   const canvas = ref()
   onMounted(() => {
     const ctx = canvas.value.getContext('2d')
