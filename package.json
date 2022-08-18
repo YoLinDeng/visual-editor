@@ -6,6 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
+    "lint:css": "stylelint src/**/*.{html,css,less,vue} --fix",
     "commit": "git add -A && git cz && npm run update:version && git push",
     "standard": "standard-version",
     "update:version": "node ./scripts/version.js"
@@ -40,8 +41,11 @@
     "commitizen": "^4.2.4",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^7.0.0",
-    "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
+    "stylelint": "13.7.2",
+    "stylelint-config-standard": "20.0.0",
+    "stylelint-scss": "^4.1.0",
+    "stylelint-webpack-plugin": "^3.1.1",
     "sass": "^1.51.0",
     "sass-loader": "^8.0.2",
     "standard-version": "^9.5.0",
@@ -53,15 +57,7 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -e $HUSKY_GIT_PARAMS"
-    }
-  },
-  "lint-staged": {
-    "*.{js,ts,jsx}": [
-      "eslint src"
-    ]
+  "gitHooks": {
+    "pre-commit": "lint-staged"
   }
 }
