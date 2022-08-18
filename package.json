@@ -41,11 +41,8 @@
     "commitizen": "^4.2.4",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^7.0.0",
+    "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
-    "stylelint": "13.7.2",
-    "stylelint-config-standard": "20.0.0",
-    "stylelint-scss": "^4.1.0",
-    "stylelint-webpack-plugin": "^3.1.1",
     "sass": "^1.51.0",
     "sass-loader": "^8.0.2",
     "standard-version": "^9.5.0",
@@ -57,7 +54,14 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
-  "gitHooks": {
-    "pre-commit": "lint-staged"
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,vue,ts,tsx}": [
+      "vue-cli-service lint"
+    ]
   }
 }
